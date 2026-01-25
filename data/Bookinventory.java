@@ -1,5 +1,5 @@
 package Libray_LMS.data;
 
-public class BookInventory{
+public class Bookinventory{
     
 }
