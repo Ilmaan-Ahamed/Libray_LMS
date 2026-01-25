@@ -1,4 +1,4 @@
-📚 Mini Library Management System (Java – DSA Based)
+🔰 Mini Library Management System (Java – DSA Based)
   This project is a console-based Mini Library Management System developed in Java to demonstrate the practical application of Data Structures and Algorithms (DSA) in a real-world scenario.
   Instead of using databases or frameworks, the system is built purely with core Java and data structures, making it ideal for academic learning and DSA practice.
 
