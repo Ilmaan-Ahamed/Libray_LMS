@@ -2,7 +2,7 @@ package Libray_LMS.data;
 
 import Libray_LMS.model.Book;  // Represents a book in the library
 
-    // Binary Search Tree class to manage book inventory
+// Binary Search Tree class to manage book inventory
 public class Bookinventory{
     private BSTNode root;
 
@@ -31,7 +31,7 @@ public class Bookinventory{
         root = deleteRec(root, isbn);
     }
 
-        // Recursive method to delete a book from the BST
+    // Recursive method to delete a book from the BST
     private BSTNode deleteRec(BSTNode root, String isbn) {
         if (root == null) return null;
 

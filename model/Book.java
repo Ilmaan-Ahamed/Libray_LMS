@@ -19,7 +19,7 @@ public class Book {
     public String getTitle()        { return title;}
     public String getAuthor()       { return author;}
     public String getIsbn()         { return isbn;}
-    public boolean getAvailable()   { return available;}
+    public boolean isAvailable()   { return available;}
     public void setAvailable(boolean available) {this.available = available;}
 
     // Override equals mehtod to compare books by ISBN
