@@ -3,11 +3,12 @@ package Libray_LMS.library;
 import Libray_LMS.model.User;               // Represnts a user of the libaray
 import Libray_LMS.service.LibraryService;   // Service class to manage libarary operations
 
+import java.net.Socket;
 import java.util.Scanner;       // Scanner for user input
 
 public class Main {
     private static Scanner scanner = new Scanner(System.in);            // Scanner for reading user input
-    private static LibraryService libraray = new LibraryService();      // Library service instance to manage books & User
+    private static LibraryService library = new LibraryService();      // Library service instance to manage books & User
     private static User currentUSer = null;                             // Current user of the library
 
     public static void main(String[] args) {
@@ -20,6 +21,7 @@ public class Main {
             System.out.println("1. Admin Funtions");
             System.out.println("2. User Functions");
             System.out.println("3. Exit");
+            System.out.println("Enter your Choice: ");
 
             int choice = scanner.nextInt();
             scanner.nextLine();      // consume newline
@@ -41,6 +43,51 @@ public class Main {
         }
     }
 
+    private static void showAdminMenu(){
+        while (true) {
+            System.out.println("\n==== Admin Menu ====");
+            System.out.println("1. Add Book");
+            System.out.println("2. Remove Books");
+            System.out.println("3. View All Books");
+            System.out.println("4. Back to Main Menu");
+            System.out.println("-- Enter your Choice --");
+
+            int choice = scanner.nextInt();
+            scanner.nextLine(); // consuem new line
+
+            // Handle useer choice for admin menu
+            switch (choice) {
+                case 1:
+                    addBook();
+                    break;
+            
+                default:
+                    break;
+            }
+        }
+    }
+
+    private static void showUserMenu(){
+        
+    }
+
+    // Method to add a new book to the library
+    private static void addBook(){
+        System.out.println("\n--- Add New Book ---");
+        
+        System.out.println("Enter Title: ");
+        String title = scanner.nextLine();
+
+        System.out.println("Enter Author: ");
+        String author = scanner.nextLine();
+
+        System.out.println("Enter ISBN Number: ");
+        String isbn = scanner.nextLine();
+
+        library.addBook(title, author, isbn);
+        System.out.println("Book added Successfully ✅");
+    
+    }
 
 
 
