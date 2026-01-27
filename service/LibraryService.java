@@ -1,13 +1,13 @@
 package Libray_LMS.service;
 
-import Libray_LMS.model.Book;
-import Libray_LMS.model.User;
-import Libray_LMS.data.Bookinventory;
+import Libray_LMS.model.Book;           // Represents a book in the libaray
+import Libray_LMS.model.User;           // Represents a user in the libaray
+import Libray_LMS.data.Bookinventory;   // Represents the book inventory using a binary a
 
 
-import java.util.Queue;
-import java.util.LinkedList;
-import java.util.Stack;
+import java.util.Queue;                 // Represents the book inventory 
+import java.util.LinkedList;            // Represents a queue for borrow requests
+import java.util.Stack;                 // Represents a stack for book returns
 
 public class LibraryService {
     private Bookinventory inventory;
