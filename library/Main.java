@@ -59,10 +59,28 @@ public class Main {
                 case 1:
                     addBook();
                     break;
-            
-                default:
+                case 2:
+                    removeBook();
                     break;
+                case 3:
+                    library.displayBooks();
+                    break;
+                case 4:
+                    return;
+                default:
+                    System.out.println("Invalid Choice!");
             }
+        }
+    }
+
+    // Method to display user menu and Handle user actions 
+    private static void showUserMenu(){
+        if (currentUSer == null) {
+            System.out.println("\nEnter Your Name: ");
+            
+            String name = scanner.nextLine();
+            currentUSer = new User(name);
+            library.setCurrentUser(currentUSer);
         }
     }
 
