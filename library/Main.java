@@ -3,7 +3,6 @@ package Libray_LMS.library;
 import Libray_LMS.model.User;               // Represnts a user of the libaray
 import Libray_LMS.service.LibraryService;   // Service class to manage libarary operations
 
-import java.net.Socket;
 import java.util.Scanner;       // Scanner for user input
 
 public class Main {
@@ -73,7 +72,7 @@ public class Main {
 
     // Method to add a new book to the library
     private static void addBook(){
-        System.out.println("\n--- Add New Book ---");
+        System.out.println("\n--- Add New Book  ---");
         
         System.out.println("Enter Title: ");
         String title = scanner.nextLine();
@@ -85,18 +84,37 @@ public class Main {
         String isbn = scanner.nextLine();
 
         library.addBook(title, author, isbn);
-        System.out.println("Book added Successfully ✅");
-    
+        System.out.println("Book added Successfully");
     }
 
+    // Method to remove a book from the library By ISBN
+    private static void removeBook(){
+        System.out.println("\n--- Remove Book ---");
+        
+        System.out.println("Enter ISBN of Book to Remove: ");
+        String isbn = scanner.nextLine();
+        library.removeBook(isbn);
+        System.out.println("Book Removed Successfully!");
+    }
 
+    // Method to borrow a book from the library
+    private static void borrowBook(){
+        System.out.println("\n--- Borrow Book ---");
 
+        System.out.println("Enter ISBN of Book to borrow: ");
+        String isbn = scanner.nextLine();
+        library.requestBorrow(isbn);
+        library.processBorrow();
+    }
 
+    // Mehtod to return a borrowed book to the library
+    private static void returnBook(){
+        System.out.println("\n--- Return Book ---");
 
-
-
-
-
-
+        System.out.println("Enter ISBN of book to return: ");
+        String isbn = scanner.nextLine();
+        library.returnBook(isbn);
+        library.processReturn();
+    }
 }
 
