@@ -7,8 +7,8 @@ import java.util.Scanner;       // Scanner for user input
 
 public class Main {
     private static Scanner scanner = new Scanner(System.in);            // Scanner for reading user input
-    private static LibraryService library = new LibraryService();      // Library service instance to manage books & User
-    private static User currentUSer = null;                             // Current user of the library
+    private static LibraryService library = new LibraryService();       // Library service instance to manage books & User
+    private static User currentUser = null;                             // Current user of the library
 
     public static void main(String[] args) {
         showMainMenu();
@@ -75,18 +75,51 @@ public class Main {
 
     // Method to display user menu and Handle user actions 
     private static void showUserMenu(){
-        if (currentUSer == null) {
+        if (currentUser == null) {
             System.out.println("\nEnter Your Name: ");
             
             String name = scanner.nextLine();
-            currentUSer = new User(name);
-            library.setCurrentUser(currentUSer);
+            currentUser = new User(name);
+            library.setCurrentUser(currentUser);
+        }
+
+        // Display user menu options and Handle user actions
+        while (true) {
+            System.out.println("\n=== User Menu (" + currentUser.getName() + ") ===");
+            System.out.println("1. Borrow Book");
+            System.out.println("2. Retrun Book");
+            System.out.println("3. View Borrowing History");
+            System.out.println("4. View Available Books");
+            System.out.println("5. Back to Main Menu");
+            System.out.println("Enter Your CHoice");
+
+            int choice = scanner.nextInt();
+            scanner.nextLine(); // Consume newline
+
+            // Handle user choice for user menu
+            switch (choice) {
+                case 1:
+                    borrowBook();
+                    break;
+                case 2:
+                    returnBook();
+                    break;
+                case 3:
+                    currentUser.displayHistory();
+                    break;
+                case 4:
+                    library.displayBooks();
+                    break;
+                case 5:
+                    return;
+                default:
+                    System.out.println("Invalid Choice!!!");
+
+            }
         }
     }
 
-    private static void showUserMenu(){
-        
-    }
+    
 
     // Method to add a new book to the library
     private static void addBook(){

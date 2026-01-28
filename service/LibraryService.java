@@ -11,14 +11,14 @@ import java.util.Stack;                 // Represents a stack for book returns
 
 public class LibraryService {
     private Bookinventory inventory;
-    private Queue<Book> borrowReaquests;
+    private Queue<Book> borrowRequests;
     private Stack<Book> retunStack;
     private User currentUser;
 
     // Constructor to initialize the libaray Service
     public LibraryService(){
         inventory       = new Bookinventory();
-        borrowReaquests = new LinkedList<>();
+        borrowRequests = new LinkedList<>();
         retunStack      = new Stack<>();
     }
 
@@ -47,7 +47,7 @@ public class LibraryService {
     public void requestBorrow(String isbn){
         Book book = inventory.search(isbn);
         if (book != null && book.isAvailable()) {
-            borrowReaquests.add(book);
+            borrowRequests.add(book);
             book.setAvailable(false);
             System.out.println("Borrow request added to queue for : " + book.getTitle());
         } else{
@@ -57,8 +57,8 @@ public class LibraryService {
 
     // Method to Process Borrow Requests 
     public void processBorrow(){
-        if (!borrowReaquests.isEmpty()) {
-            Book book = borrowReaquests.poll();
+        if (!borrowRequests.isEmpty()) {
+            Book book = borrowRequests.poll();
             if (currentUser != null) {
                 currentUser.addtoHistory(book);
             }
