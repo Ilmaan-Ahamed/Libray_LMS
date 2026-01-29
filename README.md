@@ -18,6 +18,10 @@ Stack (LIFO)
 Singly Linked List
   Stores user borrowing history, allowing sequential tracking of borrowed and returned books.
 
+  🧾 DataBase Connection work's are goging on 
+      Connect to Mysql + Java code file
+      Java JDBC Connections
+
 ⚙️ Key Features
   Add, search, and remove books from the library
   Borrow and return books using proper request handling
