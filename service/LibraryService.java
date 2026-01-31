@@ -3,7 +3,7 @@ package Libray_LMS.service;
 import Libray_LMS.model.Book;           // Represents a book in the libaray
 import Libray_LMS.model.User;           // Represents a user in the libaray
 import Libray_LMS.data.Bookinventory;   // Represents the book inventory using a binary a
-
+import Libray_LMS.Dao.BookDAO;
 
 import java.util.Queue;                 // Represents the book inventory 
 import java.util.LinkedList;            // Represents a queue for borrow requests
@@ -41,6 +41,16 @@ public class LibraryService {
     public void displayBooks(){
         System.out.println("Library Books (Sorted By ISBN):");
         inventory.displayInOrder();
+    }
+
+    BookDAO bookDAO = new BookDAO();
+    public void addBook(String title, String author){
+        Book book = new Book(title, author, author);
+        bookDAO.addBook(book);
+    }
+
+    public void viewBooks(){
+        bookDAO.viewBooks();
     }
 
     // Method to Search for a book by ISBN
