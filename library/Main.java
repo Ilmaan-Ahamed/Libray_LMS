@@ -12,7 +12,12 @@ public class Main {
 
     public static void main(String[] args) {
         showMainMenu();
+
+////////////// ERORR CODE ///////////////////////////////////////////
+        library.addBook("clean code java", "Ilmaan ahamed");
+        library.viewBooks();
     }
+////////////// ERORR CODE ///////////////////////////////////////////
 
     private static void showMainMenu(){
         while (true) {

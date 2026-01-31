@@ -43,8 +43,10 @@ public class LibraryService {
         inventory.displayInOrder();
     }
 
+
+////////////// ERORR CODE ///////////////////////////////////////////
     BookDAO bookDAO = new BookDAO();
-    public void addBook(String title, String author){
+    public void addBook(String title, String author , String){
         Book book = new Book(title, author, author);
         bookDAO.addBook(book);
     }
@@ -52,6 +54,8 @@ public class LibraryService {
     public void viewBooks(){
         bookDAO.viewBooks();
     }
+////////////// ERORR CODE ///////////////////////////////////////////
+
 
     // Method to Search for a book by ISBN
     public void requestBorrow(String isbn){
