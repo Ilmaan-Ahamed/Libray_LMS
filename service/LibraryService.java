@@ -46,7 +46,7 @@ public class LibraryService {
 
 ////////////// ERORR CODE ///////////////////////////////////////////
     BookDAO bookDAO = new BookDAO();
-    public void addBook(String title, String author , String){
+    public void addBook(String title, String author){
         Book book = new Book(title, author, author);
         bookDAO.addBook(book);
     }
