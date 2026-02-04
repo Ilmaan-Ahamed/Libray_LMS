@@ -3,6 +3,7 @@ package Libray_LMS.Dao;
 import Libray_LMS.db.DBConnection;
 import Libray_LMS.model.Book;
 
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -52,7 +53,23 @@ public class BookDAO {
                 e.printStackTrace();
             }
     }
-    
+
+    // update 
+    public void updateBook(int id, String title){
+        String sql = "UPDATE books SET title=? WHERE book_id=?";
+
+        try (Connection con = DBConnection .getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)){
+
+            ps.setString(1, title);
+            ps.setInt(2, id);
+            ps.executeUpdate();
+            System.out.println("Book Updated");
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+    }
 
 
 
