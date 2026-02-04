@@ -71,28 +71,21 @@ public class BookDAO {
         }
     }
 
+    // DELETE
+    public void deleteBook(int id){
+        String sql = "DELETE FROM books WHERE book_id=?";
 
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)){
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+                ps.setInt(1, id);
+                ps.executeUpdate();
+                System.out.println("Book Deleted");
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 
 }
