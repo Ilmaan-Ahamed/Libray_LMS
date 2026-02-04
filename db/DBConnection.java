@@ -13,8 +13,12 @@ public class DBConnection {
 
     public static Connection getConnection(){
         try {
+            //1. Estalish Connection 
             return DriverManager.getConnection(URL, USER, PASSWORD);
             } 
+
+            // 2. Create statement
+            
         catch (Exception e){
             e.printStackTrace();
             return null;

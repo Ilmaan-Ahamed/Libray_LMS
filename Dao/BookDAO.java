@@ -41,10 +41,10 @@ public class BookDAO {
                 while (rs.next()) 
                     {
                         System.out.println(
-                                    rs.getInt("book_id") + " | " +
-                                    rs.getString("title") + " | " +
-                                    rs.getString("author") + " | " +
-                                    rs.getBoolean("availabel") + " | "  );
+                            rs.getInt("book_id") + " | " +
+                            rs.getString("title") + " | " +
+                            rs.getString("author") + " | " +
+                            rs.getBoolean("available") + " | "  );
                     }
             } 
         catch (Exception e) 
@@ -52,4 +52,30 @@ public class BookDAO {
                 e.printStackTrace();
             }
     }
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
