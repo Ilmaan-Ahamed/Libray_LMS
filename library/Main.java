@@ -1,21 +1,23 @@
 package Libray_LMS.library;
 
-import Libray_LMS.model.User;               // Represnts a user of the libaray
-import Libray_LMS.service.LibraryService;   // Service class to manage libarary operations
+import Libray_LMS.model.User; // Represnts a user of the libaray
+import Libray_LMS.service.LibraryService; // Service class to manage libarary operations
+import Libray_LMS.Dao.BookDAO;
+import Libray_LMS.db.DBConnection;
 
-import java.util.Scanner;       // Scanner for user input
+import java.util.Scanner; // Scanner for user input
 
 public class Main {
-    private static Scanner scanner = new Scanner(System.in);            // Scanner for reading user input
-    private static LibraryService library = new LibraryService();       // Library service instance to manage books & User
-    private static User currentUser = null;                             // Current user of the library
+    private static Scanner scanner = new Scanner(System.in); // Scanner for reading user input
+    private static LibraryService library = new LibraryService(); // Library service instance to manage books & User
+    private static User currentUser = null; // Current user of the library
 
     public static void main(String[] args) {
+        jdbcMain();
         showMainMenu();
     }
 
-
-    private static void showMainMenu(){
+    private static void showMainMenu() {
         while (true) {
             System.out.println("\n==== Library Managment System ===");
             System.out.println("1. Admin Funtions");
@@ -24,7 +26,7 @@ public class Main {
             System.out.println("Enter your Choice: ");
 
             int choice = scanner.nextInt();
-            scanner.nextLine();      // consume newline
+            scanner.nextLine(); // consume newline
 
             // Handel user choise for the main menu
             switch (choice) {
@@ -43,7 +45,7 @@ public class Main {
         }
     }
 
-    private static void showAdminMenu(){
+    private static void showAdminMenu() {
         while (true) {
             System.out.println("\n==== Admin Menu ====");
             System.out.println("1. Add Book");
@@ -74,11 +76,11 @@ public class Main {
         }
     }
 
-    // Method to display user menu and Handle user actions 
-    private static void showUserMenu(){
+    // Method to display user menu and Handle user actions
+    private static void showUserMenu() {
         if (currentUser == null) {
             System.out.println("\nEnter Your Name: ");
-            
+
             String name = scanner.nextLine();
             currentUser = new User(name);
             library.setCurrentUser(currentUser);
@@ -120,12 +122,10 @@ public class Main {
         }
     }
 
-    
-
     // Method to add a new book to the library
-    private static void addBook(){
+    private static void addBook() {
         System.out.println("\n--- Add New Book  ---");
-        
+
         System.out.println("Enter Title: ");
         String title = scanner.nextLine();
 
@@ -140,9 +140,9 @@ public class Main {
     }
 
     // Method to remove a book from the library By ISBN
-    private static void removeBook(){
+    private static void removeBook() {
         System.out.println("\n--- Remove Book ---");
-        
+
         System.out.println("Enter ISBN of Book to Remove: ");
         String isbn = scanner.nextLine();
         library.removeBook(isbn);
@@ -150,7 +150,7 @@ public class Main {
     }
 
     // Method to borrow a book from the library
-    private static void borrowBook(){
+    private static void borrowBook() {
         System.out.println("\n--- Borrow Book ---");
 
         System.out.println("Enter ISBN of Book to borrow: ");
@@ -160,7 +160,7 @@ public class Main {
     }
 
     // Mehtod to return a borrowed book to the library
-    private static void returnBook(){
+    private static void returnBook() {
         System.out.println("\n--- Return Book ---");
 
         System.out.println("Enter ISBN of book to return: ");
@@ -169,9 +169,13 @@ public class Main {
         library.processReturn();
     }
 
-
     // Method to connect JDBC in main file
-    private static void jdbcMain(){
+    private static void jdbcMain() {
+        System.out.println("\n--- Testing JDBC Connection ---");
+        DBConnection.getConnection();
 
+        BookDAO bookDAO = new BookDAO();
+        System.out.println("Fetching books from Database...");
+        bookDAO.viewBooks();
     }
 }
