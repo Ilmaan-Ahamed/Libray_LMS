@@ -30,5 +30,9 @@ public class DBConnection {
             e.printStackTrace();
             return null;
         }
+
+    public static void main(String[] args) {
+        System.out.println("Testing DB Connection...");
+        getConnection();
     }
 }
