@@ -10,18 +10,20 @@ import java.sql.ResultSet;
 public class BookDAO {
     // ADD Book
     public void addBook(Book book) {
-        String sql = "INSERT INTO books(title, author, available) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO books(title, author, isbn, available) VALUES (?, ?, ?, ?)";
 
         try (Connection con = DBConnection.getConnection();
                 PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, book.getTitle());
             ps.setString(2, book.getAuthor());
-            ps.setBoolean(3, true);
+            ps.setString(3, book.getIsbn());
+            ps.setBoolean(4, true);
 
             ps.executeUpdate();
-            System.out.println("Book added to Database");
+            System.out.println("Book added to Database: " + book.getTitle());
 
         } catch (Exception e) {
+            System.err.println("Failed to add book to Database.");
             e.printStackTrace();
         }
     }
@@ -62,7 +64,7 @@ public class BookDAO {
         }
     }
 
-    // DELETE
+    // DELETE by ID
     public void deleteBook(int id) {
         String sql = "DELETE FROM books WHERE book_id=?";
 
@@ -71,9 +73,30 @@ public class BookDAO {
 
             ps.setInt(1, id);
             ps.executeUpdate();
-            System.out.println("Book Deleted");
+            System.out.println("Book Deleted (by ID)");
 
         } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    // DELETE by ISBN
+    public void deleteBookByIsbn(String isbn) {
+        String sql = "DELETE FROM books WHERE isbn=?";
+
+        try (Connection con = DBConnection.getConnection();
+                PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setString(1, isbn);
+            int rows = ps.executeUpdate();
+            if (rows > 0) {
+                System.out.println("Book Deleted from Database (ISBN: " + isbn + ")");
+            } else {
+                System.out.println("No book found in Database with ISBN: " + isbn);
+            }
+
+        } catch (Exception e) {
+            System.err.println("Failed to delete book from Database.");
             e.printStackTrace();
         }
     }
