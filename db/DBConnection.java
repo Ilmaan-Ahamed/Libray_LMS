@@ -31,9 +31,4 @@ public class DBConnection {
             return null;
         }
     }
-
-    public static void main(String[] args) {
-        System.out.println("Testing DB Connection...");
-        getConnection();
-    }
 }
