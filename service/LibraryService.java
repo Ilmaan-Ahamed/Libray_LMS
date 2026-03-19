@@ -67,6 +67,7 @@ public class LibraryService {
             if (currentUser != null) {
                 currentUser.addtoHistory(book);
             }
+            bookDAO.updateAvailability(book.getIsbn(), false); // ✅ Sync to DB
             System.out.println("Book Issued: " + book.getTitle());
         } else {
             System.out.println("No Pending borrow requests.");
@@ -79,12 +80,12 @@ public class LibraryService {
         if (book != null && !book.isAvailable()) {
             retunStack.push(book);
             book.setAvailable(true);
+            bookDAO.updateAvailability(isbn, true); // ✅ Sync to DB
 
             if (currentUser != null) {
                 currentUser.removeFromHistory(isbn);
             }
             System.out.println("Book returned: " + book.getTitle());
-
         } else {
             System.out.println("Invalid return request.");
         }
