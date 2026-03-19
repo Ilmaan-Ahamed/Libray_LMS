@@ -9,31 +9,32 @@ import java.sql.ResultSet;
 
 public class BookDAO {
 
-    // ADD Book to Database (matches current DB schema: title, author, available)
+    // ✅ INSERT — now saves ISBN correctly
     public void addBook(Book book) {
-        String sql = "INSERT INTO books(title, author, available) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO books (title, author, isbn, available) VALUES (?, ?, ?, ?)";
 
         try (Connection con = DBConnection.getConnection()) {
             if (con == null) {
-                System.err.println("DB Connection is null. Book NOT saved to database.");
+                System.err.println("DB Connection is null. Book NOT saved.");
                 return;
             }
             PreparedStatement ps = con.prepareStatement(sql);
             ps.setString(1, book.getTitle());
             ps.setString(2, book.getAuthor());
-            ps.setBoolean(3, true);
+            ps.setString(3, book.getIsbn()); // ✅ ISBN now persisted
+            ps.setBoolean(4, true);
 
             int rows = ps.executeUpdate();
             if (rows > 0) {
-                System.out.println("Book added to Database: " + book.getTitle());
+                System.out.println("✅ Book saved to DB: " + book.getTitle());
             }
         } catch (Exception e) {
-            System.err.println("Failed to add book to Database.");
+            System.err.println("❌ Failed to add book to DB.");
             e.printStackTrace();
         }
     }
 
-    // View Books from Database
+    // ✅ READ — displays isbn column too
     public void viewBooks() {
         String sql = "SELECT * FROM books";
 
@@ -49,61 +50,81 @@ public class BookDAO {
             boolean found = false;
             while (rs.next()) {
                 found = true;
-                System.out.println(
-                        rs.getInt("book_id") + " | " +
-                                rs.getString("title") + " | " +
-                                rs.getString("author") + " | " +
-                                (rs.getBoolean("available") ? "Available" : "Borrowed"));
+                System.out.printf("ID: %-4d | %-35s | %-25s | ISBN: %-15s | %s%n",
+                        rs.getInt("book_id"),
+                        rs.getString("title"),
+                        rs.getString("author"),
+                        rs.getString("isbn"), // ✅ show ISBN
+                        rs.getBoolean("available") ? "Available" : "Borrowed");
             }
-            if (!found) {
+            if (!found)
                 System.out.println("No books found in database.");
-            }
             System.out.println("---------------------------------");
         } catch (Exception e) {
-            System.err.println("Failed to fetch books from Database.");
+            System.err.println("❌ Failed to fetch books from DB.");
             e.printStackTrace();
         }
     }
 
-    // Update book title by ID
-    public void updateBook(int id, String title) {
-        String sql = "UPDATE books SET title=? WHERE book_id=?";
+    // ✅ UPDATE title by book_id
+    public void updateBook(int id, String newTitle) {
+        String sql = "UPDATE books SET title = ? WHERE book_id = ?";
 
         try (Connection con = DBConnection.getConnection()) {
             if (con == null)
                 return;
             PreparedStatement ps = con.prepareStatement(sql);
-            ps.setString(1, title);
+            ps.setString(1, newTitle);
             ps.setInt(2, id);
-            ps.executeUpdate();
-            System.out.println("Book Updated");
+            int rows = ps.executeUpdate();
+            System.out.println(rows > 0 ? "✅ Book title updated." : "⚠️ No book found with ID: " + id);
         } catch (Exception e) {
+            System.err.println("❌ Failed to update book.");
             e.printStackTrace();
         }
     }
 
-    // DELETE by ID
+    // ✅ UPDATE availability by ISBN — called on borrow & return
+    public void updateAvailability(String isbn, boolean available) {
+        String sql = "UPDATE books SET available = ? WHERE isbn = ?";
+
+        try (Connection con = DBConnection.getConnection()) {
+            if (con == null)
+                return;
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setBoolean(1, available);
+            ps.setString(2, isbn);
+            int rows = ps.executeUpdate();
+            if (rows > 0) {
+                System.out.println("✅ DB availability updated for ISBN: " + isbn
+                        + " → " + (available ? "Available" : "Borrowed"));
+            }
+        } catch (Exception e) {
+            System.err.println("❌ Failed to update availability in DB.");
+            e.printStackTrace();
+        }
+    }
+
+    // ✅ DELETE by book_id
     public void deleteBook(int id) {
-        String sql = "DELETE FROM books WHERE book_id=?";
+        String sql = "DELETE FROM books WHERE book_id = ?";
 
         try (Connection con = DBConnection.getConnection()) {
             if (con == null)
                 return;
             PreparedStatement ps = con.prepareStatement(sql);
             ps.setInt(1, id);
-            ps.executeUpdate();
-            System.out.println("Book Deleted (by ID)");
+            int rows = ps.executeUpdate();
+            System.out.println(rows > 0 ? "✅ Book deleted by ID." : "⚠️ No book found with ID: " + id);
         } catch (Exception e) {
+            System.err.println("❌ Failed to delete book by ID.");
             e.printStackTrace();
         }
     }
 
-    // DELETE by title and author (since DB doesn't have isbn column)
+    // ✅ DELETE by ISBN — now correctly matches isbn column
     public void deleteBookByIsbn(String isbn) {
-        // Since the DB table doesn't have an isbn column,
-        // we delete by matching title. In a future update,
-        // add an isbn column to the books table for proper matching.
-        String sql = "DELETE FROM books WHERE title=?";
+        String sql = "DELETE FROM books WHERE isbn = ?"; // ✅ was wrongly using title
 
         try (Connection con = DBConnection.getConnection()) {
             if (con == null) {
@@ -113,13 +134,11 @@ public class BookDAO {
             PreparedStatement ps = con.prepareStatement(sql);
             ps.setString(1, isbn);
             int rows = ps.executeUpdate();
-            if (rows > 0) {
-                System.out.println("Book Deleted from Database.");
-            } else {
-                System.out.println("No matching book found in Database to delete.");
-            }
+            System.out.println(rows > 0
+                    ? "✅ Book deleted from DB (ISBN: " + isbn + ")"
+                    : "⚠️ No book found in DB with ISBN: " + isbn);
         } catch (Exception e) {
-            System.err.println("Failed to delete book from Database.");
+            System.err.println("❌ Failed to delete book from DB.");
             e.printStackTrace();
         }
     }
