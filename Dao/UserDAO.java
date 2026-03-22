@@ -1,7 +1,6 @@
 package Libray_LMS.Dao;
 
 import Libray_LMS.db.DBConnection;
-import Libray_LMS.model.User;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
