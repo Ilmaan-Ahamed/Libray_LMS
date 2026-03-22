@@ -1,6 +1,5 @@
 package Libray_LMS.library;
 
-import Libray_LMS.model.User;
 import Libray_LMS.service.LibraryService;
 import Libray_LMS.Dao.BookDAO;
 import Libray_LMS.db.DBConnection;

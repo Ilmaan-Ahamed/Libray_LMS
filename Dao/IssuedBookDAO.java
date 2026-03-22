@@ -5,7 +5,6 @@ import Libray_LMS.db.DBConnection;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Date;
 
 public class IssuedBookDAO {
 
