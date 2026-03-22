@@ -24,7 +24,7 @@ public class Main {
                 scanner.nextLine(); // consume newline
                 return value;
             } catch (InputMismatchException e) {
-                System.out.println("⚠️ Please enter a valid number!");
+                System.out.println("⚠️ Please enter a valid number-!");
                 scanner.nextLine(); // clear invalid input
                 System.out.print("Try again: ");
             }
