@@ -1,32 +1,65 @@
 package Libray_LMS.service;
 
-import Libray_LMS.model.Book; // Represents a book in the libaray
-import Libray_LMS.model.User; // Represents a user in the libaray
-import Libray_LMS.data.Bookinventory; // Represents the book inventory using a binary a
-import Libray_LMS.Dao.BookDAO; // Data Access Object for database operations
+import Libray_LMS.model.Book;
+import Libray_LMS.model.User;
+import Libray_LMS.data.Bookinventory;
+import Libray_LMS.Dao.BookDAO;
+import Libray_LMS.Dao.UserDAO;
+import Libray_LMS.Dao.IssuedBookDAO;
 
-import java.util.Queue; // Represents the book inventory 
-import java.util.LinkedList; // Represents a queue for borrow requests
-import java.util.Stack; // Represents a stack for book returns
+import java.util.Queue;
+import java.util.LinkedList;
+import java.util.Stack;
+import java.util.List;
 
 public class LibraryService {
     private Bookinventory inventory;
     private Queue<Book> borrowRequests;
-    private Stack<Book> retunStack;
+    private Stack<Book> returnStack;
     private User currentUser;
     private BookDAO bookDAO;
+    private UserDAO userDAO;
+    private IssuedBookDAO issuedBookDAO;
+    private int currentUserId = -1; // Track user ID from DB
 
-    // Constructor to initialize the libaray Service
+    // Constructor to initialize the Library Service
     public LibraryService() {
         inventory = new Bookinventory();
         borrowRequests = new LinkedList<>();
-        retunStack = new Stack<>();
+        returnStack = new Stack<>();
         bookDAO = new BookDAO();
+        userDAO = new UserDAO();
+        issuedBookDAO = new IssuedBookDAO();
     }
 
     // Method to set the current user
     public void setCurrentUser(User user) {
         this.currentUser = user;
+    }
+
+    // ✅ NEW: Register or find user in DB and set current user
+    public void loginUser(String name) {
+        currentUser = new User(name);
+
+        // Check if user already exists in DB
+        int userId = userDAO.findUserByName(name);
+        if (userId == -1) {
+            // New user — register in DB
+            userId = userDAO.addUser(name);
+        } else {
+            System.out.println("✅ Welcome back, " + name + "! (ID: " + userId + ")");
+        }
+        currentUserId = userId;
+    }
+
+    // Getter for current user
+    public User getCurrentUser() {
+        return currentUser;
+    }
+
+    // Getter for current user ID
+    public int getCurrentUserId() {
+        return currentUserId;
     }
 
     // Method to add a book (in-memory BST + database)
@@ -48,15 +81,91 @@ public class LibraryService {
         inventory.displayInOrder();
     }
 
-    // Method to Search for a book by ISBN
+    // ✅ NEW: Search books by title (partial match)
+    public void searchByTitle(String keyword) {
+        List<Book> results = inventory.searchByTitle(keyword);
+        if (results.isEmpty()) {
+            System.out.println("No books found matching title: \"" + keyword + "\"");
+        } else {
+            System.out.println("--- Search Results for Title: \"" + keyword + "\" ---");
+            for (Book book : results) {
+                System.out.println("  " + book + (book.isAvailable() ? " [Available]" : " [Borrowed]"));
+            }
+            System.out.println("--- " + results.size() + " book(s) found ---");
+        }
+    }
+
+    // ✅ NEW: Search books by author (partial match)
+    public void searchByAuthor(String keyword) {
+        List<Book> results = inventory.searchByAuthor(keyword);
+        if (results.isEmpty()) {
+            System.out.println("No books found matching author: \"" + keyword + "\"");
+        } else {
+            System.out.println("--- Search Results for Author: \"" + keyword + "\" ---");
+            for (Book book : results) {
+                System.out.println("  " + book + (book.isAvailable() ? " [Available]" : " [Borrowed]"));
+            }
+            System.out.println("--- " + results.size() + " book(s) found ---");
+        }
+    }
+
+    // ✅ NEW: Show in-memory library statistics
+    public void showLocalStats() {
+        int[] counts = inventory.countBooks();
+        System.out.println("\n╔══════════════════════════════════════╗");
+        System.out.println("║     📊 IN-MEMORY BOOK STATISTICS     ║");
+        System.out.println("╠══════════════════════════════════════╣");
+        System.out.printf("║  📚 Total Books       : %-12d ║%n", counts[0]);
+        System.out.printf("║  ✅ Available Books    : %-12d ║%n", counts[1]);
+        System.out.printf("║  📖 Borrowed Books    : %-12d ║%n", counts[2]);
+        System.out.println("╚══════════════════════════════════════╝");
+    }
+
+    // ✅ NEW: Show database statistics
+    public void showDBStats() {
+        issuedBookDAO.showStats();
+    }
+
+    // ✅ NEW: View all currently issued books from DB
+    public void viewIssuedBooks() {
+        issuedBookDAO.viewIssuedBooks();
+    }
+
+    // ✅ NEW: View issue history for current user from DB
+    public void viewUserIssueHistory() {
+        if (currentUserId > 0) {
+            issuedBookDAO.viewUserHistory(currentUserId);
+        } else {
+            System.out.println("⚠️ No user logged in.");
+        }
+    }
+
+    // ✅ NEW: Admin — update book title by ID
+    public void updateBookTitle(int bookId, String newTitle) {
+        bookDAO.updateBook(bookId, newTitle);
+    }
+
+    // ✅ NEW: Admin — view books directly from database
+    public void viewBooksFromDB() {
+        bookDAO.viewBooks();
+    }
+
+    // ✅ NEW: Admin — view all registered users
+    public void viewUsers() {
+        userDAO.viewUsers();
+    }
+
+    // Method to request borrowing a book by ISBN
     public void requestBorrow(String isbn) {
         Book book = inventory.search(isbn);
         if (book != null && book.isAvailable()) {
             borrowRequests.add(book);
             book.setAvailable(false);
             System.out.println("Borrow request added to queue for : " + book.getTitle());
+        } else if (book == null) {
+            System.out.println("❌ Book not found with ISBN: " + isbn);
         } else {
-            System.out.println("Book not available for borrowing");
+            System.out.println("⚠️ Book is already borrowed: " + book.getTitle());
         }
     }
 
@@ -67,7 +176,13 @@ public class LibraryService {
             if (currentUser != null) {
                 currentUser.addtoHistory(book);
             }
-            bookDAO.updateAvailability(book.getIsbn(), false); // ✅ Sync to DB
+            bookDAO.updateAvailability(book.getIsbn(), false); // Sync to DB
+
+            // ✅ NEW: Record issue in issued_books table
+            if (currentUserId > 0) {
+                issuedBookDAO.issueBook(currentUserId, book.getIsbn());
+            }
+
             System.out.println("Book Issued: " + book.getTitle());
         } else {
             System.out.println("No Pending borrow requests.");
@@ -78,25 +193,31 @@ public class LibraryService {
     public void returnBook(String isbn) {
         Book book = inventory.search(isbn);
         if (book != null && !book.isAvailable()) {
-            retunStack.push(book);
+            returnStack.push(book);
             book.setAvailable(true);
-            bookDAO.updateAvailability(isbn, true); // ✅ Sync to DB
+            bookDAO.updateAvailability(isbn, true); // Sync to DB
+
+            // ✅ NEW: Record return in issued_books table
+            if (currentUserId > 0) {
+                issuedBookDAO.returnBook(currentUserId, isbn);
+            }
 
             if (currentUser != null) {
                 currentUser.removeFromHistory(isbn);
             }
             System.out.println("Book returned: " + book.getTitle());
+        } else if (book == null) {
+            System.out.println("❌ Book not found with ISBN: " + isbn);
         } else {
-            System.out.println("Invalid return request.");
+            System.out.println("⚠️ This book is not currently borrowed.");
         }
     }
 
     // Method to process returns from the return stack
     public void processReturn() {
-        if (!retunStack.isEmpty()) {
-            Book book = retunStack.pop();
+        if (!returnStack.isEmpty()) {
+            Book book = returnStack.pop();
             System.out.println("Processed return for: " + book.getTitle());
-
         } else {
             System.out.println("No Books to process in return stack");
         }
