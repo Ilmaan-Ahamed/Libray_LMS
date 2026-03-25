@@ -1,7 +1,5 @@
 package Libray_LMS.model;
 
-import Libray_LMS.ui.ConsoleUI;
-
 import java.util.LinkedList;
 
 public class User {
@@ -17,7 +15,7 @@ public class User {
 
     }
 
-    // Methods to manage borrowing history
+    // Methods to manage borrowing histroy
     public void addtoHistory(Book book) {
         borrowingHistory.addFirst(book);
     }
@@ -29,15 +27,8 @@ public class User {
 
     // Method to display the Borrowing History of the User
     public void displayHistory() {
-        ConsoleUI.printSectionHeader("📜  Borrowing History ─ " + name);
-        if (borrowingHistory.isEmpty()) {
-            ConsoleUI.info("No books in borrowing history.");
-        } else {
-            for (Book book : borrowingHistory) {
-                System.out.println(ConsoleUI.WHITE + "    • " + book + ConsoleUI.RESET);
-            }
-        }
-        ConsoleUI.printDivider();
+        System.out.println("Borrowing History for " + name + ":");
+        borrowingHistory.forEach(System.out::println);
     }
 
     // Getters

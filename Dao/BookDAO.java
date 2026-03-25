@@ -53,9 +53,6 @@ public class BookDAO {
             boolean found = false;
             while (rs.next()) {
                 found = true;
-                String status = rs.getBoolean("available")
-                        ? ConsoleUI.BRIGHT_GREEN + "Available" + ConsoleUI.RESET
-                        : ConsoleUI.BRIGHT_RED + "Borrowed" + ConsoleUI.RESET;
                 ConsoleUI.printTableRow(
                         String.valueOf(rs.getInt("book_id")),
                         rs.getString("title"),
