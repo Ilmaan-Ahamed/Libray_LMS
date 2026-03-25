@@ -6,6 +6,7 @@ import Libray_LMS.data.Bookinventory;
 import Libray_LMS.Dao.BookDAO;
 import Libray_LMS.Dao.UserDAO;
 import Libray_LMS.Dao.IssuedBookDAO;
+import Libray_LMS.ui.ConsoleUI;
 
 import java.util.Queue;
 import java.util.LinkedList;
@@ -37,7 +38,7 @@ public class LibraryService {
         this.currentUser = user;
     }
 
-    // ✅ NEW: Register or find user in DB and set current user
+    // Register or find user in DB and set current user
     public void loginUser(String name) {
         currentUser = new User(name);
 
@@ -47,7 +48,7 @@ public class LibraryService {
             // New user — register in DB
             userId = userDAO.addUser(name);
         } else {
-            System.out.println("✅ Welcome back, " + name + "! (ID: " + userId + ")");
+            ConsoleUI.success("Welcome back, " + name + "! (ID: " + userId + ")");
         }
         currentUserId = userId;
     }
@@ -77,80 +78,85 @@ public class LibraryService {
 
     // Method to display all books in the library sorted by ISBN
     public void displayBooks() {
-        System.out.println("Library Books (Sorted By ISBN):");
+        ConsoleUI.printSectionHeader("📚  Library Books (Sorted By ISBN)");
         inventory.displayInOrder();
+        ConsoleUI.printDivider();
     }
 
-    // ✅ NEW: Search books by title (partial match)
+    // Search books by title (partial match)
     public void searchByTitle(String keyword) {
         List<Book> results = inventory.searchByTitle(keyword);
         if (results.isEmpty()) {
-            System.out.println("No books found matching title: \"" + keyword + "\"");
+            ConsoleUI.warning("No books found matching title: \"" + keyword + "\"");
         } else {
-            System.out.println("--- Search Results for Title: \"" + keyword + "\" ---");
+            ConsoleUI.printSectionHeader("Search Results ─ Title: \"" + keyword + "\"");
             for (Book book : results) {
-                System.out.println("  " + book + (book.isAvailable() ? " [Available]" : " [Borrowed]"));
+                String status = book.isAvailable()
+                        ? ConsoleUI.BRIGHT_GREEN + " [Available]" + ConsoleUI.RESET
+                        : ConsoleUI.BRIGHT_RED + " [Borrowed]" + ConsoleUI.RESET;
+                System.out.println(ConsoleUI.WHITE + "    • " + book + status);
             }
-            System.out.println("--- " + results.size() + " book(s) found ---");
+            ConsoleUI.info(results.size() + " book(s) found.");
         }
     }
 
-    // ✅ NEW: Search books by author (partial match)
+    // Search books by author (partial match)
     public void searchByAuthor(String keyword) {
         List<Book> results = inventory.searchByAuthor(keyword);
         if (results.isEmpty()) {
-            System.out.println("No books found matching author: \"" + keyword + "\"");
+            ConsoleUI.warning("No books found matching author: \"" + keyword + "\"");
         } else {
-            System.out.println("--- Search Results for Author: \"" + keyword + "\" ---");
+            ConsoleUI.printSectionHeader("Search Results ─ Author: \"" + keyword + "\"");
             for (Book book : results) {
-                System.out.println("  " + book + (book.isAvailable() ? " [Available]" : " [Borrowed]"));
+                String status = book.isAvailable()
+                        ? ConsoleUI.BRIGHT_GREEN + " [Available]" + ConsoleUI.RESET
+                        : ConsoleUI.BRIGHT_RED + " [Borrowed]" + ConsoleUI.RESET;
+                System.out.println(ConsoleUI.WHITE + "    • " + book + status);
             }
-            System.out.println("--- " + results.size() + " book(s) found ---");
+            ConsoleUI.info(results.size() + " book(s) found.");
         }
     }
 
-    // ✅ NEW: Show in-memory library statistics
+    // Show in-memory library statistics
     public void showLocalStats() {
         int[] counts = inventory.countBooks();
-        System.out.println("\n╔══════════════════════════════════════╗");
-        System.out.println("║     📊 IN-MEMORY BOOK STATISTICS     ║");
-        System.out.println("╠══════════════════════════════════════╣");
-        System.out.printf("║  📚 Total Books       : %-12d ║%n", counts[0]);
-        System.out.printf("║  ✅ Available Books    : %-12d ║%n", counts[1]);
-        System.out.printf("║  📖 Borrowed Books    : %-12d ║%n", counts[2]);
-        System.out.println("╚══════════════════════════════════════╝");
+        ConsoleUI.printStatsBox("IN-MEMORY BOOK STATISTICS", new String[][] {
+                { "📚", "Total Books", String.valueOf(counts[0]) },
+                { "✅", "Available Books", String.valueOf(counts[1]) },
+                { "📖", "Borrowed Books", String.valueOf(counts[2]) }
+        });
     }
 
-    // ✅ NEW: Show database statistics
+    // Show database statistics
     public void showDBStats() {
         issuedBookDAO.showStats();
     }
 
-    // ✅ NEW: View all currently issued books from DB
+    // View all currently issued books from DB
     public void viewIssuedBooks() {
         issuedBookDAO.viewIssuedBooks();
     }
 
-    // ✅ NEW: View issue history for current user from DB
+    // View issue history for current user from DB
     public void viewUserIssueHistory() {
         if (currentUserId > 0) {
             issuedBookDAO.viewUserHistory(currentUserId);
         } else {
-            System.out.println("⚠️ No user logged in.");
+            ConsoleUI.warning("No user logged in.");
         }
     }
 
-    // ✅ NEW: Admin — update book title by ID
+    // Admin — update book title by ID
     public void updateBookTitle(int bookId, String newTitle) {
         bookDAO.updateBook(bookId, newTitle);
     }
 
-    // ✅ NEW: Admin — view books directly from database
+    // Admin — view books directly from database
     public void viewBooksFromDB() {
         bookDAO.viewBooks();
     }
 
-    // ✅ NEW: Admin — view all registered users
+    // Admin — view all registered users
     public void viewUsers() {
         userDAO.viewUsers();
     }
@@ -161,11 +167,11 @@ public class LibraryService {
         if (book != null && book.isAvailable()) {
             borrowRequests.add(book);
             book.setAvailable(false);
-            System.out.println("Borrow request added to queue for : " + book.getTitle());
+            ConsoleUI.info("Borrow request queued for: " + book.getTitle());
         } else if (book == null) {
-            System.out.println("❌ Book not found with ISBN: " + isbn);
+            ConsoleUI.error("Book not found with ISBN: " + isbn);
         } else {
-            System.out.println("⚠️ Book is already borrowed: " + book.getTitle());
+            ConsoleUI.warning("Book is already borrowed: " + book.getTitle());
         }
     }
 
@@ -178,14 +184,14 @@ public class LibraryService {
             }
             bookDAO.updateAvailability(book.getIsbn(), false); // Sync to DB
 
-            // ✅ NEW: Record issue in issued_books table
+            // Record issue in issued_books table
             if (currentUserId > 0) {
                 issuedBookDAO.issueBook(currentUserId, book.getIsbn());
             }
 
-            System.out.println("Book Issued: " + book.getTitle());
+            ConsoleUI.success("Book Issued: " + book.getTitle());
         } else {
-            System.out.println("No Pending borrow requests.");
+            ConsoleUI.info("No pending borrow requests.");
         }
     }
 
@@ -197,7 +203,7 @@ public class LibraryService {
             book.setAvailable(true);
             bookDAO.updateAvailability(isbn, true); // Sync to DB
 
-            // ✅ NEW: Record return in issued_books table
+            // Record return in issued_books table
             if (currentUserId > 0) {
                 issuedBookDAO.returnBook(currentUserId, isbn);
             }
@@ -205,11 +211,11 @@ public class LibraryService {
             if (currentUser != null) {
                 currentUser.removeFromHistory(isbn);
             }
-            System.out.println("Book returned: " + book.getTitle());
+            ConsoleUI.success("Book returned: " + book.getTitle());
         } else if (book == null) {
-            System.out.println("❌ Book not found with ISBN: " + isbn);
+            ConsoleUI.error("Book not found with ISBN: " + isbn);
         } else {
-            System.out.println("⚠️ This book is not currently borrowed.");
+            ConsoleUI.warning("This book is not currently borrowed.");
         }
     }
 
@@ -217,9 +223,9 @@ public class LibraryService {
     public void processReturn() {
         if (!returnStack.isEmpty()) {
             Book book = returnStack.pop();
-            System.out.println("Processed return for: " + book.getTitle());
+            ConsoleUI.success("Processed return for: " + book.getTitle());
         } else {
-            System.out.println("No Books to process in return stack");
+            ConsoleUI.info("No books to process in return stack.");
         }
     }
 }

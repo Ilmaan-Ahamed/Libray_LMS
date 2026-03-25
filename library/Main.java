@@ -3,6 +3,7 @@ package Libray_LMS.library;
 import Libray_LMS.service.LibraryService;
 import Libray_LMS.Dao.BookDAO;
 import Libray_LMS.db.DBConnection;
+import Libray_LMS.ui.ConsoleUI;
 
 import java.util.Scanner;
 import java.util.InputMismatchException;
@@ -12,11 +13,13 @@ public class Main {
     private static LibraryService library = new LibraryService();
 
     public static void main(String[] args) {
+        ConsoleUI.enableAnsiSupport();
+        ConsoleUI.printBanner();
         jdbcMain();
         showMainMenu();
     }
 
-    // ✅ Safe integer input with validation
+    // Safe integer input with validation
     private static int getIntInput() {
         while (true) {
             try {
@@ -24,25 +27,23 @@ public class Main {
                 scanner.nextLine(); // consume newline
                 return value;
             } catch (InputMismatchException e) {
-                System.out.println("⚠️ Please enter a valid number-!");
+                ConsoleUI.warning("Please enter a valid number!");
                 scanner.nextLine(); // clear invalid input
-                System.out.print("Try again: ");
+                ConsoleUI.printPrompt("Try again: ");
             }
         }
     }
 
     private static void showMainMenu() {
         while (true) {
-            System.out.println("\n╔══════════════════════════════════════╗");
-            System.out.println("║   📚 LIBRARY MANAGEMENT SYSTEM       ║");
-            System.out.println("╠══════════════════════════════════════╣");
-            System.out.println("║  1. 🔧 Admin Functions               ║");
-            System.out.println("║  2. 👤 User Functions                ║");
-            System.out.println("║  3. 📊 Library Statistics            ║");
-            System.out.println("║  4. 🔍 Search Books                  ║");
-            System.out.println("║  5. ❌ Exit                          ║");
-            System.out.println("╚══════════════════════════════════════╝");
-            System.out.print("Enter your Choice: ");
+            ConsoleUI.printMenuHeader("📚  LIBRARY MANAGEMENT SYSTEM");
+            ConsoleUI.printMenuItem(1, "🔧", "Admin Functions");
+            ConsoleUI.printMenuItem(2, "👤", "User Functions");
+            ConsoleUI.printMenuItem(3, "📊", "Library Statistics");
+            ConsoleUI.printMenuItem(4, "🔍", "Search Books");
+            ConsoleUI.printMenuItem(5, "❌", "Exit");
+            ConsoleUI.printMenuFooter();
+            ConsoleUI.printPrompt("Enter your choice: ");
 
             int choice = getIntInput();
 
@@ -60,29 +61,27 @@ public class Main {
                     showSearchMenu();
                     break;
                 case 5:
-                    System.out.println("👋 Exiting System... Goodbye!");
+                    ConsoleUI.printGoodbye();
                     return;
                 default:
-                    System.out.println("⚠️ Invalid Choice! Please select 1-5.");
+                    ConsoleUI.warning("Invalid Choice! Please select 1-5.");
             }
         }
     }
 
     private static void showAdminMenu() {
         while (true) {
-            System.out.println("\n╔══════════════════════════════════════╗");
-            System.out.println("║          🔧 ADMIN MENU               ║");
-            System.out.println("╠══════════════════════════════════════╣");
-            System.out.println("║  1. ➕ Add Book                      ║");
-            System.out.println("║  2. ➖ Remove Book                   ║");
-            System.out.println("║  3. 📋 View All Books (In-Memory)    ║");
-            System.out.println("║  4. 🗄️  View All Books (Database)    ║");
-            System.out.println("║  5. ✏️  Update Book Title             ║");
-            System.out.println("║  6. 👥 View Registered Users         ║");
-            System.out.println("║  7. 📖 View Issued Books             ║");
-            System.out.println("║  8. ⬅️  Back to Main Menu             ║");
-            System.out.println("╚══════════════════════════════════════╝");
-            System.out.print("Enter your Choice: ");
+            ConsoleUI.printMenuHeader("🔧  ADMIN PANEL");
+            ConsoleUI.printMenuItem(1, "➕", "Add Book");
+            ConsoleUI.printMenuItem(2, "➖", "Remove Book");
+            ConsoleUI.printMenuItem(3, "📋", "View All Books (In-Memory)");
+            ConsoleUI.printMenuItem(4, "🗄️ ", "View All Books (Database)");
+            ConsoleUI.printMenuItem(5, "✏️ ", "Update Book Title");
+            ConsoleUI.printMenuItem(6, "👥", "View Registered Users");
+            ConsoleUI.printMenuItem(7, "📖", "View Issued Books");
+            ConsoleUI.printMenuItem(8, "⬅️ ", "Back to Main Menu");
+            ConsoleUI.printMenuFooter();
+            ConsoleUI.printPrompt("Enter your choice: ");
 
             int choice = getIntInput();
 
@@ -111,32 +110,31 @@ public class Main {
                 case 8:
                     return;
                 default:
-                    System.out.println("⚠️ Invalid Choice! Please select 1-8.");
+                    ConsoleUI.warning("Invalid Choice! Please select 1-8.");
             }
         }
     }
 
     private static void showUserMenu() {
         if (library.getCurrentUser() == null) {
-            System.out.print("\n👤 Enter Your Name: ");
+            ConsoleUI.printBlankLine();
+            ConsoleUI.printPrompt("Enter Your Name: ");
             String name = scanner.nextLine();
-            library.loginUser(name); // ✅ Register/login via DB
+            library.loginUser(name);
         }
 
         while (true) {
-            System.out.println("\n╔══════════════════════════════════════╗");
-            System.out.println("║   👤 USER MENU (" + padRight(library.getCurrentUser().getName(), 18) + ")  ║");
-            System.out.println("╠══════════════════════════════════════╣");
-            System.out.println("║  1. 📖 Borrow Book                   ║");
-            System.out.println("║  2. 📥 Return Book                   ║");
-            System.out.println("║  3. 📜 View Borrowing History        ║");
-            System.out.println("║  4. 📚 View Available Books          ║");
-            System.out.println("║  5. 📋 View My Issue History (DB)    ║");
-            System.out.println("║  6. 🔍 Search Books                  ║");
-            System.out.println("║  7. 🔄 Switch User                   ║");
-            System.out.println("║  8. ⬅️  Back to Main Menu             ║");
-            System.out.println("╚══════════════════════════════════════╝");
-            System.out.print("Enter Your Choice: ");
+            ConsoleUI.printMenuHeader("👤  USER MENU  ─  " + library.getCurrentUser().getName());
+            ConsoleUI.printMenuItem(1, "📖", "Borrow Book");
+            ConsoleUI.printMenuItem(2, "📥", "Return Book");
+            ConsoleUI.printMenuItem(3, "📜", "View Borrowing History");
+            ConsoleUI.printMenuItem(4, "📚", "View Available Books");
+            ConsoleUI.printMenuItem(5, "📋", "View My Issue History (DB)");
+            ConsoleUI.printMenuItem(6, "🔍", "Search Books");
+            ConsoleUI.printMenuItem(7, "🔄", "Switch User");
+            ConsoleUI.printMenuItem(8, "⬅️ ", "Back to Main Menu");
+            ConsoleUI.printMenuFooter();
+            ConsoleUI.printPrompt("Enter your choice: ");
 
             int choice = getIntInput();
 
@@ -160,79 +158,73 @@ public class Main {
                     showSearchMenu();
                     break;
                 case 7:
-                    // ✅ NEW: Switch user
-                    System.out.print("\n👤 Enter New User Name: ");
+                    ConsoleUI.printBlankLine();
+                    ConsoleUI.printPrompt("Enter New User Name: ");
                     String name = scanner.nextLine();
                     library.loginUser(name);
-                    System.out.println("✅ Switched to user: " + name);
+                    ConsoleUI.success("Switched to user: " + name);
                     break;
                 case 8:
                     return;
                 default:
-                    System.out.println("⚠️ Invalid Choice! Please select 1-8.");
+                    ConsoleUI.warning("Invalid Choice! Please select 1-8.");
             }
         }
     }
 
-    // ✅ NEW: Search Menu
+    // Search Menu
     private static void showSearchMenu() {
         while (true) {
-            System.out.println("\n╔══════════════════════════════════════╗");
-            System.out.println("║          🔍 SEARCH BOOKS             ║");
-            System.out.println("╠══════════════════════════════════════╣");
-            System.out.println("║  1. Search by Title                  ║");
-            System.out.println("║  2. Search by Author                 ║");
-            System.out.println("║  3. Search by ISBN                   ║");
-            System.out.println("║  4. ⬅️  Back                          ║");
-            System.out.println("╚══════════════════════════════════════╝");
-            System.out.print("Enter your Choice: ");
+            ConsoleUI.printMenuHeader("🔍  SEARCH BOOKS");
+            ConsoleUI.printMenuItem(1, "📕", "Search by Title");
+            ConsoleUI.printMenuItem(2, "✍️ ", "Search by Author");
+            ConsoleUI.printMenuItem(3, "🔢", "Search by ISBN");
+            ConsoleUI.printMenuItem(4, "⬅️ ", "Back");
+            ConsoleUI.printMenuFooter();
+            ConsoleUI.printPrompt("Enter your choice: ");
 
             int choice = getIntInput();
 
             switch (choice) {
                 case 1:
-                    System.out.print("Enter title keyword: ");
+                    ConsoleUI.printPrompt("Enter title keyword: ");
                     String titleKeyword = scanner.nextLine();
                     library.searchByTitle(titleKeyword);
                     break;
                 case 2:
-                    System.out.print("Enter author keyword: ");
+                    ConsoleUI.printPrompt("Enter author keyword: ");
                     String authorKeyword = scanner.nextLine();
                     library.searchByAuthor(authorKeyword);
                     break;
                 case 3:
-                    System.out.print("Enter ISBN: ");
+                    ConsoleUI.printPrompt("Enter ISBN: ");
                     String isbn = scanner.nextLine();
                     searchByIsbn(isbn);
                     break;
                 case 4:
                     return;
                 default:
-                    System.out.println("⚠️ Invalid Choice!");
+                    ConsoleUI.warning("Invalid Choice!");
             }
         }
     }
 
-    // ✅ NEW: Search by ISBN helper
+    // Search by ISBN helper
     private static void searchByIsbn(String isbn) {
-        // Use reflection or direct search — we'll do it via the service
-        System.out.println("--- Searching for ISBN: " + isbn + " ---");
-        // We need to leverage existing search — for now print via display
+        ConsoleUI.printSectionHeader("Searching for ISBN: " + isbn);
         library.displayBooks(); // Shows all books; user can visually scan
-        System.out.println("(Tip: Use borrow/return by ISBN for direct lookup)");
+        ConsoleUI.info("Tip: Use borrow/return by ISBN for direct lookup.");
     }
 
-    // ✅ NEW: Statistics Menu
+    // Statistics Menu
     private static void showStatsMenu() {
         while (true) {
-            System.out.println("\n╔══════════════════════════════════════╗");
-            System.out.println("║        📊 LIBRARY STATISTICS         ║");
-            System.out.println("╠══════════════════════════════════════╣");
-            System.out.println("║  1. In-Memory Statistics             ║");
-            System.out.println("║  2. Database Statistics              ║");
-            System.out.println("║  3. ⬅️  Back                          ║");
-            System.out.println("╚══════════════════════════════════════╝");
-            System.out.print("Enter your Choice: ");
+            ConsoleUI.printMenuHeader("📊  LIBRARY STATISTICS");
+            ConsoleUI.printMenuItem(1, "💾", "In-Memory Statistics");
+            ConsoleUI.printMenuItem(2, "🗄️ ", "Database Statistics");
+            ConsoleUI.printMenuItem(3, "⬅️ ", "Back");
+            ConsoleUI.printMenuFooter();
+            ConsoleUI.printPrompt("Enter your choice: ");
 
             int choice = getIntInput();
 
@@ -246,45 +238,45 @@ public class Main {
                 case 3:
                     return;
                 default:
-                    System.out.println("⚠️ Invalid Choice!");
+                    ConsoleUI.warning("Invalid Choice!");
             }
         }
     }
 
     // Method to add a new book to the library
     private static void addBook() {
-        System.out.println("\n--- ➕ Add New Book ---");
+        ConsoleUI.printSectionHeader("➕  Add New Book");
 
-        System.out.print("Enter Title: ");
+        ConsoleUI.printPrompt("Enter Title: ");
         String title = scanner.nextLine();
 
-        System.out.print("Enter Author: ");
+        ConsoleUI.printPrompt("Enter Author: ");
         String author = scanner.nextLine();
 
-        System.out.print("Enter ISBN Number: ");
+        ConsoleUI.printPrompt("Enter ISBN Number: ");
         String isbn = scanner.nextLine();
 
         library.addBook(title, author, isbn);
-        System.out.println("✅ Book added successfully!");
+        ConsoleUI.success("Book added successfully!");
     }
 
     // Method to remove a book from the library By ISBN
     private static void removeBook() {
-        System.out.println("\n--- ➖ Remove Book ---");
+        ConsoleUI.printSectionHeader("➖  Remove Book");
 
-        System.out.print("Enter ISBN of Book to Remove: ");
+        ConsoleUI.printPrompt("Enter ISBN of Book to Remove: ");
         String isbn = scanner.nextLine();
         library.removeBook(isbn);
     }
 
-    // ✅ NEW: Update a book title by its database ID
+    // Update a book title by its database ID
     private static void updateBookTitle() {
-        System.out.println("\n--- ✏️ Update Book Title ---");
+        ConsoleUI.printSectionHeader("✏️  Update Book Title");
 
-        System.out.print("Enter Book ID (from database): ");
+        ConsoleUI.printPrompt("Enter Book ID (from database): ");
         int id = getIntInput();
 
-        System.out.print("Enter New Title: ");
+        ConsoleUI.printPrompt("Enter New Title: ");
         String newTitle = scanner.nextLine();
 
         library.updateBookTitle(id, newTitle);
@@ -292,9 +284,9 @@ public class Main {
 
     // Method to borrow a book from the library
     private static void borrowBook() {
-        System.out.println("\n--- 📖 Borrow Book ---");
+        ConsoleUI.printSectionHeader("📖  Borrow Book");
 
-        System.out.print("Enter ISBN of Book to borrow: ");
+        ConsoleUI.printPrompt("Enter ISBN of Book to borrow: ");
         String isbn = scanner.nextLine();
         library.requestBorrow(isbn);
         library.processBorrow();
@@ -302,9 +294,9 @@ public class Main {
 
     // Method to return a borrowed book to the library
     private static void returnBook() {
-        System.out.println("\n--- 📥 Return Book ---");
+        ConsoleUI.printSectionHeader("📥  Return Book");
 
-        System.out.print("Enter ISBN of book to return: ");
+        ConsoleUI.printPrompt("Enter ISBN of book to return: ");
         String isbn = scanner.nextLine();
         library.returnBook(isbn);
         library.processReturn();
@@ -312,18 +304,19 @@ public class Main {
 
     // Method to connect JDBC in main file
     private static void jdbcMain() {
-        System.out.println("\n--- 🔌 Testing JDBC Connection ---");
-        DBConnection.getConnection();
+        ConsoleUI.printSectionHeader("🔌  Testing JDBC Connection");
+        java.sql.Connection con = DBConnection.getConnection();
+        ConsoleUI.printConnectionStatus(con != null);
+
+        if (con != null) {
+            try {
+                con.close();
+            } catch (Exception ignored) {
+            }
+        }
 
         BookDAO bookDAO = new BookDAO();
-        System.out.println("Fetching books from Database...");
+        ConsoleUI.info("Fetching books from Database...");
         bookDAO.viewBooks();
-    }
-
-    // Helper method to pad strings for aligned menu display
-    private static String padRight(String s, int n) {
-        if (s.length() >= n)
-            return s.substring(0, n);
-        return String.format("%-" + n + "s", s);
     }
 }
