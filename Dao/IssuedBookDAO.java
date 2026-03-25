@@ -1,6 +1,7 @@
 package Libray_LMS.Dao;
 
 import Libray_LMS.db.DBConnection;
+import Libray_LMS.ui.ConsoleUI;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -8,15 +9,14 @@ import java.sql.ResultSet;
 
 public class IssuedBookDAO {
 
-    // ✅ INSERT — Record a book issue
+    // INSERT — Record a book issue
     public void issueBook(int userId, String isbn) {
-        // First get book_id from isbn
         String findBookSql = "SELECT book_id FROM books WHERE isbn = ?";
         String issueSql = "INSERT INTO issued_books (user_id, book_id, issue_date, return_status) VALUES (?, ?, GETDATE(), 0)";
 
         try (Connection con = DBConnection.getConnection()) {
             if (con == null) {
-                System.err.println("DB Connection is null. Cannot issue book.");
+                ConsoleUI.error("DB Connection is null. Cannot issue book.");
                 return;
             }
 
@@ -35,18 +35,18 @@ public class IssuedBookDAO {
                 int rows = issuePs.executeUpdate();
 
                 if (rows > 0) {
-                    System.out.println("✅ Book issue recorded in DB (ISBN: " + isbn + ")");
+                    ConsoleUI.success("Book issue recorded in DB (ISBN: " + isbn + ")");
                 }
             } else {
-                System.out.println("⚠️ Book not found in DB with ISBN: " + isbn);
+                ConsoleUI.warning("Book not found in DB with ISBN: " + isbn);
             }
         } catch (Exception e) {
-            System.err.println("❌ Failed to record book issue in DB.");
+            ConsoleUI.error("Failed to record book issue in DB.");
             e.printStackTrace();
         }
     }
 
-    // ✅ UPDATE — Mark a book as returned
+    // UPDATE — Mark a book as returned
     public void returnBook(int userId, String isbn) {
         String sql = "UPDATE issued_books SET return_status = 1 " +
                 "WHERE user_id = ? AND book_id = (SELECT book_id FROM books WHERE isbn = ?) " +
@@ -60,15 +60,15 @@ public class IssuedBookDAO {
             ps.setString(2, isbn);
             int rows = ps.executeUpdate();
             if (rows > 0) {
-                System.out.println("✅ Return recorded in DB for ISBN: " + isbn);
+                ConsoleUI.success("Return recorded in DB for ISBN: " + isbn);
             }
         } catch (Exception e) {
-            System.err.println("❌ Failed to record return in DB.");
+            ConsoleUI.error("Failed to record return in DB.");
             e.printStackTrace();
         }
     }
 
-    // ✅ READ — View all currently issued (not returned) books
+    // READ — View all currently issued (not returned) books in a styled table
     public void viewIssuedBooks() {
         String sql = "SELECT ib.issue_id, u.name, b.title, b.isbn, ib.issue_date " +
                 "FROM issued_books ib " +
@@ -79,33 +79,36 @@ public class IssuedBookDAO {
 
         try (Connection con = DBConnection.getConnection()) {
             if (con == null) {
-                System.err.println("DB Connection is null.");
+                ConsoleUI.error("DB Connection is null.");
                 return;
             }
             PreparedStatement ps = con.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
 
-            System.out.println("------- Currently Issued Books -------");
+            ConsoleUI.printSectionHeader("📖  Currently Issued Books");
+            ConsoleUI.printTableHeader("Issue#", "User", "Book Title", "ISBN", "Date");
+
             boolean found = false;
             while (rs.next()) {
                 found = true;
-                System.out.printf("Issue #%-4d | User: %-20s | Book: %-30s | ISBN: %-15s | Date: %s%n",
-                        rs.getInt("issue_id"),
+                ConsoleUI.printTableRow(
+                        String.valueOf(rs.getInt("issue_id")),
                         rs.getString("name"),
                         rs.getString("title"),
                         rs.getString("isbn"),
                         rs.getDate("issue_date").toString());
             }
-            if (!found)
-                System.out.println("No books are currently issued.");
-            System.out.println("--------------------------------------");
+            if (!found) {
+                ConsoleUI.info("No books are currently issued.");
+            }
+            ConsoleUI.printTableFooterCustom(6, 20, 15, 13, 10);
         } catch (Exception e) {
-            System.err.println("❌ Failed to fetch issued books from DB.");
+            ConsoleUI.error("Failed to fetch issued books from DB.");
             e.printStackTrace();
         }
     }
 
-    // ✅ READ — View issue history for a specific user
+    // READ — View issue history for a specific user in a styled table
     public void viewUserHistory(int userId) {
         String sql = "SELECT b.title, b.isbn, ib.issue_date, " +
                 "CASE WHEN ib.return_status = 1 THEN 'Returned' ELSE 'Borrowed' END AS status " +
@@ -121,26 +124,29 @@ public class IssuedBookDAO {
             ps.setInt(1, userId);
             ResultSet rs = ps.executeQuery();
 
-            System.out.println("------- Issue History -------");
+            ConsoleUI.printSectionHeader("📜  Issue History");
+            ConsoleUI.printTableHeader("Title", "ISBN", "Date", "Status");
+
             boolean found = false;
             while (rs.next()) {
                 found = true;
-                System.out.printf("%-30s | ISBN: %-15s | Date: %s | Status: %s%n",
+                ConsoleUI.printTableRow(
                         rs.getString("title"),
                         rs.getString("isbn"),
                         rs.getDate("issue_date").toString(),
                         rs.getString("status"));
             }
-            if (!found)
-                System.out.println("No borrowing history found.");
-            System.out.println("-----------------------------");
+            if (!found) {
+                ConsoleUI.info("No borrowing history found.");
+            }
+            ConsoleUI.printTableFooterCustom(6, 22, 15, 12);
         } catch (Exception e) {
-            System.err.println("❌ Failed to fetch user history from DB.");
+            ConsoleUI.error("Failed to fetch user history from DB.");
             e.printStackTrace();
         }
     }
 
-    // ✅ READ — Get statistics: total issued, total returned, currently borrowed
+    // READ — Get statistics: total issued, total returned, currently borrowed
     public void showStats() {
         String sql = "SELECT " +
                 "(SELECT COUNT(*) FROM books) AS total_books, " +
@@ -157,19 +163,17 @@ public class IssuedBookDAO {
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
-                System.out.println("\n╔══════════════════════════════════════╗");
-                System.out.println("║     📊 LIBRARY STATISTICS            ║");
-                System.out.println("╠══════════════════════════════════════╣");
-                System.out.printf("║  📚 Total Books       : %-12d ║%n", rs.getInt("total_books"));
-                System.out.printf("║  ✅ Available Books    : %-12d ║%n", rs.getInt("available_books"));
-                System.out.printf("║  📖 Borrowed Books    : %-12d ║%n", rs.getInt("borrowed_books"));
-                System.out.printf("║  📝 Total Issues      : %-12d ║%n", rs.getInt("total_issues"));
-                System.out.printf("║  🔄 Active Borrows    : %-12d ║%n", rs.getInt("active_issues"));
-                System.out.printf("║  👤 Registered Users  : %-12d ║%n", rs.getInt("total_users"));
-                System.out.println("╚══════════════════════════════════════╝");
+                ConsoleUI.printStatsBox("DATABASE STATISTICS", new String[][] {
+                        { "📚", "Total Books", String.valueOf(rs.getInt("total_books")) },
+                        { "✅", "Available Books", String.valueOf(rs.getInt("available_books")) },
+                        { "📖", "Borrowed Books", String.valueOf(rs.getInt("borrowed_books")) },
+                        { "📝", "Total Issues", String.valueOf(rs.getInt("total_issues")) },
+                        { "🔄", "Active Borrows", String.valueOf(rs.getInt("active_issues")) },
+                        { "👤", "Registered Users", String.valueOf(rs.getInt("total_users")) }
+                });
             }
         } catch (Exception e) {
-            System.err.println("❌ Failed to fetch library statistics.");
+            ConsoleUI.error("Failed to fetch library statistics.");
             e.printStackTrace();
         }
     }
