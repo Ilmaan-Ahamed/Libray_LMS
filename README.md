@@ -1,48 +1,59 @@
-🔰 Mini Library Management System (Java – DSA Based)
-  This project is a console-based Mini Library Management System developed in Java to demonstrate the practical application of Data Structures and Algorithms (DSA) in a real-world scenario.
-  Instead of using databases or frameworks, the system is built purely with core Java and data structures, making it ideal for academic learning and DSA practice.
+# Library Management System (LMS)
 
-🔧 Data Structures Used & Their Purpose
-    Binary Search Tree (BST)
-    Used to manage the book inventory.
-    Enables efficient insertion, searching, and deletion of books based on book ID or name.
+## Project Overview
+Library Management System (LMS) is designed to automate the management of a library. It helps simplify the process of lending books, tracking inventory, and managing user memberships.
 
-Queue (FIFO)
-  Handles borrow requests from users.
-  Ensures fair processing where requests are served in the order they arrive.
+## Architecture
+The project follows a Model-View-Controller (MVC) architecture:
+- **Model**: Manages the data and business logic.
+- **View**: Presents the user interface.
+- **Controller**: Responds to user input and interacts with the model.
 
-Stack (LIFO)
-  Manages book returns.
-  The most recently returned book is processed first, simulating real-world return handling.
+## Features
+- User registration and login.
+- Book management (add, remove, search, and view).
+- Membership management.
+- Borrowing and returning books.
+- Notifications for due dates.
 
-Singly Linked List
-  Stores user borrowing history, allowing sequential tracking of borrowed and returned books.
+## Setup Instructions
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/Ilmaan-Ahamed/Libray_LMS.git
 
-  🧾 DataBase Connection work's are goging on 
-      Connect to Mysql + Java code file
-      Java JDBC Connections
+Navigate to the project directory:
+bash
+cd Libray_LMS
 
-⚙️ Key Features
-  Add, search, and remove books from the library
-  Borrow and return books using proper request handling
-  Track user borrowing history
-  Efficient data handling using DSA concepts
+Install dependencies:
+bash
+npm install
 
-Menu-driven, user-friendly console interface
+Run the application:
+bash
+npm start
 
-🎯 Learning Outcomes
-  Hands-on implementation of BST, Stack, Queue, and Linked List
-  Understanding how different data structures solve specific problems
-  Improved problem-solving and algorithmic thinking
-  Strong foundation for advanced Java and system design projects
+Project Structure
+Code
+Libray_LMS/
+├── src/
+│   ├── models/
+│   ├── controllers/
+│   ├── views/
+├── tests/
+├── README.md
+└── package.json
 
-🛠️ Technologies Used
-  Java (Core Java)
-  Object-Oriented Programming (OOP)
-  Data Structures & Algorithms
+Testing Guide
+To run the tests, use the following command:
 
-🚀 Future Improvements
-  File handling or database integration
-  GUI version (JavaFX / Swing)
-  Role-based access (Admin / User)
-  Performance optimization
+bash
+npm test
+
+Contributing Guidelines
+Fork the repository.
+Create a new branch (git checkout -b feature/YourFeature).
+Make your changes and commit them (git commit -m 'Add some feature').
+Push to the branch (git push origin feature/YourFeature).
+Open a pull request.
+Code
