@@ -1,59 +1,109 @@
-# Library Management System (LMS)
+# 📚 Library Management System (LMS)
 
-## Project Overview
-Library Management System (LMS) is designed to automate the management of a library. It helps simplify the process of lending books, tracking inventory, and managing user memberships.
+## 📌 Project Overview
+The **Library Management System (LMS)** is designed to automate the management of a library.  
+It simplifies processes such as **book lending, inventory tracking, and user management**.
 
-## Architecture
-The project follows a Model-View-Controller (MVC) architecture:
-- **Model**: Manages the data and business logic.
-- **View**: Presents the user interface.
-- **Controller**: Responds to user input and interacts with the model.
+---
 
-## Features
-- User registration and login.
-- Book management (add, remove, search, and view).
-- Membership management.
-- Borrowing and returning books.
-- Notifications for due dates.
+## 🏗 Architecture
 
-## Setup Instructions
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/Ilmaan-Ahamed/Libray_LMS.git
+This project follows the **Model-View-Controller (MVC)** architecture:
 
-Navigate to the project directory:
-bash
+- **Model** → Manages data and business logic  
+- **View** → Handles the user interface  
+- **Controller** → Processes user input and interacts with the model  
+
+---
+
+## 🚀 Features
+
+- 👤 User registration and login  
+- 📖 Book management (add, remove, search, view)  
+- 🪪 Membership management  
+- 🔄 Borrowing and returning books  
+- 🔔 Notifications for due dates  
+
+---
+
+## ⚙️ Setup Instructions
+
+### 1️⃣ Clone the Repository
+```bash
+git clone https://github.com/Ilmaan-Ahamed/Libray_LMS.git
+```
+
+### 2️⃣ Navigate to Project Directory
+```bash
 cd Libray_LMS
+```
 
-Install dependencies:
-bash
+### 3️⃣ Install Dependencies
+```bash
 npm install
+```
 
-Run the application:
-bash
+### 4️⃣ Run the Application
+```bash
 npm start
+```
 
-Project Structure
-Code
+---
+
+## 📁 Project Structure
+
+```
 Libray_LMS/
+│
 ├── src/
 │   ├── models/
 │   ├── controllers/
 │   ├── views/
+│
 ├── tests/
 ├── README.md
 └── package.json
+```
 
-Testing Guide
-To run the tests, use the following command:
+---
 
-bash
+## 🧪 Testing Guide
+
+To run tests:
+
+```bash
 npm test
+```
 
-Contributing Guidelines
-Fork the repository.
-Create a new branch (git checkout -b feature/YourFeature).
-Make your changes and commit them (git commit -m 'Add some feature').
-Push to the branch (git push origin feature/YourFeature).
-Open a pull request.
-Code
+---
+
+## 🤝 Contributing Guidelines
+
+1. Fork the repository  
+2. Create a new branch  
+   ```bash
+   git checkout -b feature/YourFeature
+   ```
+3. Commit your changes  
+   ```bash
+   git commit -m "Add your feature"
+   ```
+4. Push to your branch  
+   ```bash
+   git push origin feature/YourFeature
+   ```
+5. Open a Pull Request  
+
+---
+
+## 🔗 Project Repository
+
+[View on GitHub](https://github.com/Ilmaan-Ahamed/Libray_LMS)
+
+---
+
+## 👨‍💻 Author
+
+**Ilmaan Ahamed**  
+Software Engineering Undergraduate  
+SLTC Research University
