@@ -1,25 +1,39 @@
-Working on Code files 
-Test 1.1
-Test 1.2
-Test 1.3
+Test Cases
+1. BookTest.java - Model Testing Code
+✅ Test book creation with valid parameters
+✅ Test getter methods (getTitle, getAuthor, getIsbn)
+✅ Test availability status (default should be true)
+✅ Test setAvailable() to mark as borrowed/returned
+✅ Test toString() method formatting
+✅ Test edge cases (null values, empty strings)
 
-Test 2.1
+2. UserTest.java - User Management Testing Code
+✅ Test user creation with name
+✅ Test borrowing history initialization (empty LinkedList)
+✅ Test addtoHistory() - adds books to front of list
+✅ Test removeFromHistory() - removes book by ISBN
+✅ Test displayHistory() - validates LinkedList operations
+✅ Test getName() getter
+✅ Test multiple book additions and removals
 
-ALL Test ARE DONE 
+3. LibraryServiceTest.java - Service Layer Testing Code
+✅ Test initialization of all data structures
+✅ Test addBook() - BST insertion & DB sync
+✅ Test removeBook() - BST deletion & DB sync
+✅ Test searchByTitle() - partial matching
+✅ Test searchByAuthor() - partial matching
+✅ Test requestBorrow() - Queue operations
+✅ Test processBorrow() - Queue to user history
+✅ Test returnBook() - Stack operations
+✅ Test processReturn() - Stack processing
+✅ Test loginUser() - user registration/retrieval
+✅ Test book availability tracking
 
-
-Working on DataBase files
-
-Test 3.0
-Test 3.1
-Test 3.2
-Test 3.3 is DONE
-
-
------------------------
-Test 4.0
-Test 4.1
-Test 4.2 - new features
-
-test 5.0 ui changes
-test 5.1 fixing error 
+4. ConsoleUITest.java - UI Component Testing Code
+✅ Test ANSI color constants
+✅ Test text alignment (center, right-pad)
+✅ Test menu rendering
+✅ Test table rendering with headers/footers
+✅ Test message formatting (success, error, warning, info)
+✅ Test ANSI stripping for length calculation
+✅ Test statistics box display
