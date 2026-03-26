@@ -37,3 +37,11 @@ Test Cases
 ✅ Test message formatting (success, error, warning, info)
 ✅ Test ANSI stripping for length calculation
 ✅ Test statistics box display
+
+
+                DSA Coverage Tests
+    Data Structure	                    Test Focus
+BST (Binary Search Tree)	            Insertion, deletion, in-order traversal, search efficiency
+Queue	                                Borrow requests FIFO ordering
+Stack	                                Return operations LIFO ordering
+LinkedList	                            User borrowing history, add/remove operations
